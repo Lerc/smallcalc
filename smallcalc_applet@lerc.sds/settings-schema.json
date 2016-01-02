@@ -1,0 +1,8 @@
+
+{
+    "someSetting": {
+        "type": "checkbox",
+        "description": "Some setting of some kind or another",
+        "default": false
+    }
+}
