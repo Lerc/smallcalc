@@ -48,12 +48,12 @@ function makeApplet(orientation, panel_height, applet_id) {
 
    var base = 10;
 
-   let parser = MathJS.parser();
-
    var settings=new Settings.AppletSettings(applet,uuid,applet.instance_id);
-   settings.bindProperty(Settings.BindingDirection.BIDIRECTIONAL,"someSetting", "someSetting", settingHappened);
+   settings.bindProperty(Settings.BindingDirection.IN,"definitions", "definitions", definitionsChanged);
 
-
+   let parser = MathJS.parser();
+   loadDefinitions();
+   
     var osdBox = new St.Bin({ style_class: 'nop',
                               reactive: true,
                               track_hover: true,
@@ -234,7 +234,7 @@ function makeApplet(orientation, panel_height, applet_id) {
      const buttonMul = {  label : "  ×  ",   handler : makeInsertHandler("*")  };
      const buttonDiv = {  label : "  ÷  ",   handler : makeInsertHandler("/")  };
      const buttonC = {  label : "  C  ",   handler : function(){textBox.clutter_text.text=" "; } };
-     const buttonAC = {  label : " AC ",   handler : function(){textBox.clutter_text.text=" "; parser=MathJS.parser(); } };
+     const buttonAC = {  label : " AC ",   handler : function(){textBox.clutter_text.text=" "; resetParser();} };
 
      const buttonPi = {  label : "  π  ",   handler : makeInsertHandler(" Pi ") };
      const buttonEquals = {  label : "  =  ",   handler : evaluateDisplay };
@@ -474,7 +474,20 @@ function makeApplet(orientation, panel_height, applet_id) {
 
    }
 
-   function settingHappened() {
-      global.log(" config setting happened on "+applet.instance_id);
+   function resetParser() {
+     parser=MathJS.parser();
+     loadDefinitons();
+   }
+   function loadDefinitions() {
+     let lines = applet.definitions;
+     global.log("definitions are \n"+lines);
+     for (let line of lines.split("\n") ) {
+       global.log("parsing "+line);
+       parser.eval(line);
+     }
+   }
+   function definitionsChanged() {
+      global.log(" defintions changed for  "+applet.instance_id);
+      loadDefinitions();
    }
 }

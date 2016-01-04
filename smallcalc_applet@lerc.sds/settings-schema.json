@@ -1,8 +1,17 @@
 
 {
-    "someSetting": {
-        "type": "checkbox",
-        "description": "Some setting of some kind or another",
-        "default": false
-    }
+  "definitionsheader": {
+    "type": "header",
+    "description": "Initial definitions"
+  },
+  "definitions": {
+      "type": "textview",
+      "description": "",
+      "default" : "meaningOfLife = 42\nsphereVolume(r) = 4/3 Pi r^3"
+  }
+
+
+
+
+
 }
