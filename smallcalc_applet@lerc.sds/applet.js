@@ -26,9 +26,6 @@ MathJS.import({"Pi" : Math.PI});
 
 function main(metadata, orientation, panel_height, applet_id) {
 
-  global.log("hello");
-  global.log(Object.getOwnPropertyNames(MathJS));
-
   let applet = makeApplet(orientation, panel_height, applet_id);
   return applet;
 }
@@ -53,7 +50,7 @@ function makeApplet(orientation, panel_height, applet_id) {
 
    let parser = MathJS.parser();
    loadDefinitions();
-   
+
     var osdBox = new St.Bin({ style_class: 'nop',
                               reactive: true,
                               track_hover: true,
@@ -61,14 +58,12 @@ function makeApplet(orientation, panel_height, applet_id) {
     });
 
    applet.on_applet_removed_from_panel = function() {
-     global.log("removed");
       osdBox.destroy();
       settings.finalize();
    };
 
    applet.on_applet_clicked = function() {
      toggleVisible();
-     global.log("calc applet clicked");
    };
 
    buildLayout();
@@ -114,17 +109,16 @@ function makeApplet(orientation, panel_height, applet_id) {
 
       dragStartMousePosition = event.get_coords();
       dragStartPosition = actor.get_position();
-       global.log("mouse down on calc");
      });
+
      osdBox.connect("button-release-event", function() {
        dragging=false;
        Main.popModal(osdBox);
        Clutter.ungrab_pointer(osdBox);
-       global.log(layoutBox.textEntryField);
-       layoutBox.textEntryField.grab_key_focus();
 
-       global.log("mouse up on calc");
+       layoutBox.textEntryField.grab_key_focus();
      });
+
      osdBox.connect("motion-event", function(actor,event) {
        if (dragging)  {
          let [mouseStartX,mouseStartY] = dragStartMousePosition;
@@ -157,7 +151,7 @@ function makeApplet(orientation, panel_height, applet_id) {
      clutterText.set_activatable(true);
      clutterText.set_single_line_mode(true);
 
-     clutterText.connect('activate', function (){global.log("activate");});
+     clutterText.connect('activate', function (){});
      clutterText.connect('key-press-event', handleKeyPress);
 
      clutterText.connect('button-press-event', function (t,e){
@@ -250,7 +244,7 @@ function makeApplet(orientation, panel_height, applet_id) {
     }
 
      function changeBase(newBase) {
-       global.log("changing base from "+base+" to "+newBase);
+       //global.log("changing base from "+base+" to "+newBase);
        for (let b in baseButtons) {
 
          baseButtons[b].remove_style_class_name("lit");
@@ -264,10 +258,10 @@ function makeApplet(orientation, panel_height, applet_id) {
 
      function evaluateDisplay() {
        if (textBox.clutter_text.text==="") return;  //don't evaluate empty string
-       global.log("evaluating "+textBox.clutter_text.text);
+       //global.log("evaluating "+textBox.clutter_text.text);
 
        var decimalExpression = decimalRepresentation(textBox.clutter_text.text,base);
-       global.log("as decimal "+decimalExpression);
+       //global.log("as decimal "+decimalExpression);
        //always evaluate in decimal.
        addToHistory(decimalExpression);
        let result = parser.eval(decimalExpression);
@@ -291,34 +285,34 @@ function makeApplet(orientation, panel_height, applet_id) {
      }
 
      function baseRepresentation(text,base){
-       global.log("need to convert Decimal "+text +" to base "+base);
+       //global.log("need to convert Decimal "+text +" to base "+base);
        var re = /(?:(?!\w).|^|\n)(-?(?:0|[1-9]\d*)(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g;
        var result = text.replace(re,function(match,contents){
-         global.log("replace match="+match+" contents="+contents);
+         //global.log("replace match="+match+" contents="+contents);
          return match.replace(contents,Number(contents).toString(base));
        } );
        //var result = text.replace(re,function(match,contents){return Number.parseFloat(contents).toString(base);} );
-       global.log("result of replace is "+result);
+       //global.log("result of replace is "+result);
 
        if (base==16) {
-         global.log("Test back to decimal "+result+ "as decimal is " + expressionHexToDecimal(result));
+         //global.log("Test back to decimal "+result+ "as decimal is " + expressionHexToDecimal(result));
          expressionHexToDecimal(result);
        }
        if (base==8) {
-         global.log("Test back to decimal "+result+ "as decimal is " + expressionOctalToDecimal(result));
+         //global.log("Test back to decimal "+result+ "as decimal is " + expressionOctalToDecimal(result));
          expressionOctalToDecimal(result);
        }
        if (base==2) {
-         global.log("Test back to decimal "+result+ "as decimal is " + expressionBinaryToDecimal(result));
+         //global.log("Test back to decimal "+result+ "as decimal is " + expressionBinaryToDecimal(result));
 
        }
-       global.log(text +" in base "+base +" is "+result);
+       //global.log(text +" in base "+base +" is "+result);
 
        return result;
      }
 
      function decimalRepresentation(text,base) {
-       global.log("need to convert base "+base+" expression " +text +" to Decimal");
+       //global.log("need to convert base "+base+" expression " +text +" to Decimal");
        if (base==10) return text;
        if (base==16) return expressionHexToDecimal(text);
        if (base==8) return  expressionOctalToDecimal(text);
@@ -351,7 +345,7 @@ function makeApplet(orientation, panel_height, applet_id) {
      }
 
      function setDisplayText(text) {
-       global.log(text +" becomes "+ baseRepresentation(text,base));
+       //global.log(text +" becomes "+ baseRepresentation(text,base));
        textBox.clutter_text.text=baseRepresentation(text,base);
      }
 
@@ -377,7 +371,7 @@ function makeApplet(orientation, panel_height, applet_id) {
        }
 
        if (untouched_result === true) {
-         global.log("keycode was "+keyCode);
+         //global.log("keycode was "+keyCode);
          if ('0123456789.'.indexOf(keyCode) >=0)  textBox.clutter_text.text="";
        }
      }
@@ -425,7 +419,7 @@ function makeApplet(orientation, panel_height, applet_id) {
      invButton=fnStore[0][0];
      invButton.set_toggle_mode(true);
 
-     global.log("setting base buttons");
+
      binButton=fnStore[0][1];
      octButton=fnStore[0][2];
      decButton=fnStore[0][3];
@@ -465,7 +459,7 @@ function makeApplet(orientation, panel_height, applet_id) {
      textBox.grab_key_focus();
 
      applet.focus=function(){
-       global.log("applet focus");
+       //global.log("applet focus");
      };
 
    }
@@ -480,14 +474,12 @@ function makeApplet(orientation, panel_height, applet_id) {
    }
    function loadDefinitions() {
      let lines = applet.definitions;
-     global.log("definitions are \n"+lines);
      for (let line of lines.split("\n") ) {
-       global.log("parsing "+line);
        parser.eval(line);
      }
    }
    function definitionsChanged() {
-      global.log(" defintions changed for  "+applet.instance_id);
+      //global.log(" defintions changed for  "+applet.instance_id);
       loadDefinitions();
    }
 }
