@@ -9,9 +9,4 @@
       "description": "",
       "default" : "meaningOfLife = 42\nsphereVolume(r) = 4/3 Pi r^3"
   }
-
-
-
-
-
 }
