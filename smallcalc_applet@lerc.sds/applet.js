@@ -36,7 +36,7 @@ function makeApplet(orientation, panel_height, applet_id) {
    applet.set_applet_icon_name("calc");
    applet.set_applet_tooltip("Show calculator");
    var layoutBox;
-   let history = ['top of history',""];
+   let history = ['top of history'," "];
    history.index=1;
    var invButton,binButton,octButton,decButton,hexButton;
    let baseButtons=[];
@@ -94,6 +94,8 @@ function makeApplet(orientation, panel_height, applet_id) {
        osdBox.hide();
      } else {
        osdBox.show();
+       global.stage.set_key_focus(layoutBox.textEntryField);
+       global.set_stage_input_mode(Cinnamon.StageInputMode.FOCUSED);
      }
    }
 
@@ -111,12 +113,12 @@ function makeApplet(orientation, panel_height, applet_id) {
       dragStartPosition = actor.get_position();
      });
 
-     osdBox.connect("button-release-event", function() {
+     osdBox.connect("button-release-event", function(actor,ev) {
        dragging=false;
        Main.popModal(osdBox);
        Clutter.ungrab_pointer(osdBox);
-
-       layoutBox.textEntryField.grab_key_focus();
+       global.stage.set_key_focus(layoutBox.textEntryField);
+       global.set_stage_input_mode(Cinnamon.StageInputMode.FOCUSED);
      });
 
      osdBox.connect("motion-event", function(actor,event) {
@@ -141,6 +143,7 @@ function makeApplet(orientation, panel_height, applet_id) {
      //content.layout_manager = new Clutter.FlowLayout();
 
      let textBox = new St.Entry({text:" ", style_class:"entryfield", track_hover:true,  can_focus: true, reactive:true});
+
      layoutBox.textEntryField=textBox;
 
      content.add_actor(textBox);
@@ -265,7 +268,7 @@ function makeApplet(orientation, panel_height, applet_id) {
        //always evaluate in decimal.
        addToHistory(decimalExpression);
        let result = parser.eval(decimalExpression);
-       let newText = "";
+       let newText = " ";
        if (typeof(result) === 'function') {
          newText = "function ''"+result.name+ "'' set.";
        } else
